@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
+# Usage:
+# $ modality="T2"
+# $ ./download_ixi.sh $modality
+#
+# Possible modalities are T1, T2, PD, MRA and DTI.
+# If nothing is passed, the T1 images will be downloaded:
+# $ ./download_ixi.sh
 
-MODALITY=${1:-T1}  # "T1" is the default value
+MODALITY=${1:-T1}
 IXI_DIR="data/IXI"
 DATASET_NAME="IXI-$MODALITY"
 MODALITY_DIR=$IXI_DIR/$DATASET_NAME
