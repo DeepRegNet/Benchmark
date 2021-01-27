@@ -11,7 +11,6 @@ repos:
       - id: check-vcs-permalinks # Ensure that links to vcs websites are permalinks
       - id: debug-statements # Check for debugger imports and py37+ `breakpoint()` calls in python source
       - id: detect-private-key # Detect the presence of private keys
-      - id: double-quote-string-fixer # Replace double quoted strings with single quoted strings.
       - id: end-of-file-fixer # Ensure that a file is either empty, or ends with one newline
       - id: mixed-line-ending # Replace or checks mixed line ending
       - id: trailing-whitespace # This hook trims trailing whitespace
