@@ -95,6 +95,7 @@ def preprocess(image_path: str, label_path: str, matrix_path: str):
 
 
 for image_path, label_path, matrix_path in tqdm(
-    zip(image_file_paths, label_file_paths, matrix_file_paths)
+    zip(image_file_paths, label_file_paths, matrix_file_paths),
+    total=num_images,
 ):
     preprocess(image_path=image_path, label_path=label_path, matrix_path=matrix_path)
