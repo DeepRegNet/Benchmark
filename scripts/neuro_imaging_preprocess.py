@@ -16,10 +16,16 @@ import glob
 import os
 
 import torchio as tio
+from tqdm import tqdm
 
 SMALLEST_BRAIN_LABEL = 24  # from colour table
 data_folder_path = "/raid/candi/Yunguan/DeepReg/neuroimaging"
 output_folder_path = f"{data_folder_path}/preprocessed"
+
+for folder_name in ["images", "labels"]:
+    _path = f"{output_folder_path}/{folder_name}"
+    if not os.path.exists(_path):
+        os.makedirs(_path)
 
 # get file paths
 image_file_paths = glob.glob(f"{data_folder_path}/mri/*.nii.gz")
@@ -88,7 +94,7 @@ def preprocess(image_path: str, label_path: str, matrix_path: str):
     mri.save(out_image_path)
 
 
-for image_path, label_path, matrix_path in zip(
-    image_file_paths, label_file_paths, matrix_file_paths
+for image_path, label_path, matrix_path in tqdm(
+    zip(image_file_paths, label_file_paths, matrix_file_paths)
 ):
     preprocess(image_path=image_path, label_path=label_path, matrix_path=matrix_path)
