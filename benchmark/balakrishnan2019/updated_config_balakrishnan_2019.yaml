@@ -1,0 +1,51 @@
+dataset:
+  dir:
+    test: /home/mathpluscode/Git/DeepReg/data/test/nifti/unpaired/test
+    train: /home/mathpluscode/Git/DeepReg/data/test/nifti/unpaired/train
+    valid: null
+  format: nifti
+  image_shape:
+    - 64
+    - 64
+    - 64
+  labeled: false
+  type: unpaired
+train:
+  backbone:
+    concat_skip: true
+    decode_num_channels:
+      - 32
+      - 32
+      - 32
+      - 32
+      - 32
+    depth: 4
+    encode_num_channels:
+      - 16
+      - 32
+      - 32
+      - 32
+      - 32
+    name: vm_balakrishnan_2019
+    num_channel_initial: 16
+  epochs: 2
+  loss:
+    image:
+      name: lncc
+      weight: 1.0
+    label:
+      name: dice
+      weight: 0.0
+    regularization:
+      name: gradient
+      weight: 1.0
+  method: ddf
+  optimizer:
+    learning_rate: 0.0001
+    name: Adam
+  preprocess:
+    batch_size: 2
+    data_augmentation:
+      name: affine
+    shuffle_buffer_num_batch: 1
+  save_period: 2
