@@ -149,7 +149,7 @@ class VoxelMorphBalakrishnan2019(UNet):
         """
         return tf.keras.Sequential(
             [
-                tfkl.Lambda(lambda x: x[-1]),  # take the last one / depth 0
+                tfkl.Lambda(lambda x: x[0]),  # take the first one / depth 0
                 tfkl.Conv3D(
                     filters=self.num_channel_initial,
                     kernel_size=3,
