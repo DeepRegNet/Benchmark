@@ -216,9 +216,6 @@ class GradientNorm(tf.keras.layers.Layer):
         if self.l1:
             df = [tf.reduce_mean(tf.abs(f)) for f in self._diffs(ddf)]
         else:
-            assert self.penalty == "l2", (
-                "penalty can only be l1 or l2. Got: %s" % self.penalty
-            )
             df = [tf.reduce_mean(f * f) for f in self._diffs(ddf)]
         return tf.add_n(df) / len(df)
 
