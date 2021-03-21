@@ -4,6 +4,7 @@ import argparse
 from typing import Tuple, Union
 
 import tensorflow as tf
+import tensorflow.keras.backend as K
 import tensorflow.keras.layers as tfkl
 from deepreg.model.backbone import UNet
 from deepreg.registry import REGISTRY
@@ -180,6 +181,72 @@ class VoxelMorphBalakrishnan2019(UNet):
         output = tf.concat([inputs, output], axis=4)
         output = self._out_ddf_conv(output)
         return output
+
+
+@REGISTRY.register_loss(name="gradient-vm")
+class GradientNorm(tf.keras.layers.Layer):
+    """
+    Calculate the L1/L2 norm of ddf using central finite difference.
+
+    y_true and y_pred have to be at least 5d tensor, including batch axis.
+    """
+
+    def __init__(self, l1: bool = False, name: str = "GradientNorm"):
+        """
+        Init.
+
+        :param l1: bool true if calculate L1 norm, otherwise L2 norm
+        :param name: name of the loss
+        """
+        super().__init__(name=name)
+        self.l1 = l1
+
+    def call(self, inputs: tf.Tensor, **kwargs) -> tf.Tensor:
+        """
+        Return a scalar loss.
+
+        :param inputs: shape = (batch, m_dim1, m_dim2, m_dim3, 3)
+        :param kwargs: additional arguments.
+        :return: shape = ()
+        """
+        assert len(inputs.shape) == 5
+        tf.debugging.check_numerics(inputs, "GRAIDENT ddf value NAN/INF", name=None)
+        ddf = inputs
+
+        if self.l1:
+            df = [tf.reduce_mean(tf.abs(f)) for f in self._diffs(ddf)]
+        else:
+            assert self.penalty == "l2", (
+                "penalty can only be l1 or l2. Got: %s" % self.penalty
+            )
+            df = [tf.reduce_mean(f * f) for f in self._diffs(ddf)]
+        return tf.add_n(df) / len(df)
+
+    def get_config(self) -> dict:
+        """Return the config dictionary for recreating this class."""
+        config = super().get_config()
+        config["l1"] = self.l1
+        return config
+
+    def _diffs(self, y):
+        vol_shape = y.get_shape().as_list()[1:-1]
+        ndims = len(vol_shape)
+
+        df = []
+        for i in range(ndims):
+            d = i + 1
+            # permute dimensions to put the ith dimension first
+            r = [d, *range(d), *range(d + 1, ndims + 2)]
+            y = K.permute_dimensions(y, r)
+            dfi = y[1:, ...] - y[:-1, ...]
+
+            # permute back
+            # note: this might not be necessary for this loss specifically,
+            # since the results are just summed over anyway.
+            r = [*range(1, d + 1), 0, *range(d + 1, ndims + 2)]
+            df.append(K.permute_dimensions(dfi, r))
+
+        return df
 
 
 def main(args=None):
