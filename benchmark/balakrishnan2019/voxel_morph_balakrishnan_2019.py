@@ -29,7 +29,7 @@ class VoxelMorphBalakrishnan2019(UNet):
             filters=3,
             kernel_size=3,
             padding="same",
-            activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+            activation=self.get_activation(),
         )
 
     def build_encode_conv_block(
@@ -48,7 +48,7 @@ class VoxelMorphBalakrishnan2019(UNet):
             kernel_size=kernel_size,
             padding=padding,
             strides=2,
-            activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+            activation=self.get_activation(),
         )
 
     def build_down_sampling_block(
@@ -81,7 +81,7 @@ class VoxelMorphBalakrishnan2019(UNet):
             kernel_size=kernel_size,
             padding=padding,
             strides=2,
-            activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+            activation=self.get_activation(),
         )
 
     def build_up_sampling_block(
@@ -125,7 +125,7 @@ class VoxelMorphBalakrishnan2019(UNet):
             kernel_size=kernel_size,
             padding=padding,
             strides=1,
-            activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+            activation=self.get_activation(),
         )
 
     def build_output_block(
@@ -155,13 +155,13 @@ class VoxelMorphBalakrishnan2019(UNet):
                     filters=self.num_channel_initial,
                     kernel_size=3,
                     padding="same",
-                    activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+                    activation=self.get_activation(),
                 ),
                 tfkl.Conv3D(
                     filters=self.num_channel_initial,
                     kernel_size=3,
                     padding="same",
-                    activation=tf.keras.layers.LeakyReLU(alpha=0.2),
+                    activation=self.get_activation(),
                 ),
             ]
         )
@@ -181,6 +181,10 @@ class VoxelMorphBalakrishnan2019(UNet):
         output = tf.concat([inputs, output], axis=4)
         output = self._out_ddf_conv(output)
         return output
+
+    def get_activation(self) -> tf.keras.layers.Layer:
+        """Return activation layer."""
+        return tf.keras.layers.ReLU()
 
 
 @REGISTRY.register_loss(name="gradient-vm")
