@@ -161,7 +161,6 @@ class VoxelMorphBalakrishnan2019(UNet):
                     filters=self.num_channel_initial,
                     kernel_size=3,
                     padding="same",
-                    activation=self.get_activation(),
                 ),
             ]
         )
@@ -184,7 +183,7 @@ class VoxelMorphBalakrishnan2019(UNet):
 
     def get_activation(self) -> tf.keras.layers.Layer:
         """Return activation layer."""
-        return tf.keras.layers.ReLU()
+        return tf.keras.layers.LeakyReLU(alpha=0.2)
 
 
 @REGISTRY.register_loss(name="gradient-vm")
