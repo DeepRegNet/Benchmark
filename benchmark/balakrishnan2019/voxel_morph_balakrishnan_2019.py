@@ -161,6 +161,9 @@ class VoxelMorphBalakrishnan2019(UNet):
                     filters=self.num_channel_initial,
                     kernel_size=3,
                     padding="same",
+                    kernel_initializer=tf.keras.initializers.RandomNormal(
+                        mean=0.0, stddev=1e-5
+                    ),
                 ),
             ]
         )
