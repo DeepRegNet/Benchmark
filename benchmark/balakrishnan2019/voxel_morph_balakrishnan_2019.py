@@ -10,6 +10,8 @@ from deepreg.model.backbone import UNet
 from deepreg.registry import REGISTRY
 from deepreg.train import train
 
+tf.debugging.enable_check_numerics()
+
 
 @REGISTRY.register_backbone(name="vm_balakrishnan_2019")
 class VoxelMorphBalakrishnan2019(UNet):
