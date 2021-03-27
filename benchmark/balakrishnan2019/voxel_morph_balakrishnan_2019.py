@@ -149,19 +149,19 @@ class VoxelMorphBalakrishnan2019(UNet):
         """
 
         class OutputBlock(tf.keras.Model):
-            def __init__(self):
+            def __init__(self, num_channel_initial, activation):
                 super().__init__()
                 self.conv1 = (
                     tfkl.Conv3D(
-                        filters=self.num_channel_initial,
+                        filters=num_channel_initial,
                         kernel_size=3,
                         padding="same",
-                        activation=self.get_activation(),
+                        activation=activation,
                     ),
                 )
                 self.conv2 = (
                     tfkl.Conv3D(
-                        filters=self.num_channel_initial,
+                        filters=num_channel_initial,
                         kernel_size=3,
                         padding="same",
                         kernel_initializer=tf.keras.initializers.RandomNormal(
@@ -176,7 +176,10 @@ class VoxelMorphBalakrishnan2019(UNet):
                 x = self.conv2(x)
                 return x
 
-        return OutputBlock()
+        return OutputBlock(
+            num_channel_initial=self.num_channel_initial,
+            activation=self.get_activation(),
+        )
 
     def call(self, inputs: tf.Tensor, training=None, mask=None) -> tf.Tensor:
         """
