@@ -1,0 +1,4 @@
+mypy
+pre-commit>=2.10.0
+torchio
+tqdm

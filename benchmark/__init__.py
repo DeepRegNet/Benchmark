@@ -1,0 +1,1 @@
+"""Benchmark with other methods."""
